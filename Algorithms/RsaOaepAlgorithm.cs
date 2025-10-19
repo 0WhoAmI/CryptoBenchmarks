@@ -1,4 +1,4 @@
-﻿using CryptoBenchmarks.Algorithms.Interfaces;
+﻿using CryptoBenchmarks.Interfaces;
 using System.Security.Cryptography;
 
 namespace CryptoBenchmarks.Algorithms

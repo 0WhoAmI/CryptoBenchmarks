@@ -1,4 +1,4 @@
-﻿using CryptoBenchmarks.Algorithms.Interfaces;
+﻿using CryptoBenchmarks.Interfaces;
 using System.Security.Cryptography;
 
 namespace CryptoBenchmarks.Algorithms
@@ -8,37 +8,26 @@ namespace CryptoBenchmarks.Algorithms
         public string Name => "3DES-CBC";
         public int KeySize => 168;
 
-        private byte[] key;
-        private byte[] iv;
+        private TripleDES tdes;
 
         public void GenerateKey()
         {
-            using var tdes = TripleDES.Create();
+            tdes = TripleDES.Create();
             tdes.GenerateKey();
-            tdes.GenerateIV();
-            key = tdes.Key;
-            iv = tdes.IV;
+            tdes.GenerateIV(); // ustawiamy wektor inicjalizacyjny CBC
+            tdes.Mode = CipherMode.CBC; // blokowy tryb szyfrowania (każdy blok XOR z poprzednim)
+            tdes.Padding = PaddingMode.PKCS7; // dopełnienie danych do pełnych bloków DES
         }
 
         public byte[] Encrypt(byte[] plaintext)
         {
-            using var tdes = TripleDES.Create();
-            tdes.Key = key;
-            tdes.IV = iv;
-            tdes.Mode = CipherMode.CBC;
-            tdes.Padding = PaddingMode.PKCS7;
-            using var enc = tdes.CreateEncryptor();
+            using ICryptoTransform enc = tdes.CreateEncryptor();
             return enc.TransformFinalBlock(plaintext, 0, plaintext.Length);
         }
 
         public byte[] Decrypt(byte[] ciphertext)
         {
-            using var tdes = TripleDES.Create();
-            tdes.Key = key;
-            tdes.IV = iv;
-            tdes.Mode = CipherMode.CBC;
-            tdes.Padding = PaddingMode.PKCS7;
-            using var dec = tdes.CreateDecryptor();
+            using ICryptoTransform dec = tdes.CreateDecryptor();
             return dec.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
         }
     }

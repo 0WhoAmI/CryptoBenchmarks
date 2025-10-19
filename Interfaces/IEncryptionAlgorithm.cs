@@ -1,4 +1,4 @@
-﻿namespace CryptoBenchmarks.Algorithms.Interfaces
+﻿namespace CryptoBenchmarks.Interfaces
 {
     public interface IEncryptionAlgorithm
     {

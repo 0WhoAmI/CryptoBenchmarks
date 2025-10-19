@@ -1,45 +1,26 @@
 ﻿using CryptoBenchmarks.Algorithms;
-using CryptoBenchmarks.Algorithms.Interfaces;
 using CryptoBenchmarks.Benchmarks;
-using CryptoBenchmarks.Models;
-using System.Text.Json;
+using CryptoBenchmarks.Interfaces;
 
 namespace CryptoBenchmarks
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-
-            /*
-             * TODO:
-             * - zrobić punkt 1 (porównanie czasu generowania kluczy)
-             * 
-             */
+            Console.OutputEncoding = System.Text.Encoding.UTF8; // aby poprawnie wyświetlać polskie litery
 
             var algorithms = new List<IEncryptionAlgorithm>
             {
+                new RsaOaepAlgorithm(2048),
+                new RsaOaepAlgorithm(3072),
                 new AesGcmAlgorithm(128),
                 new AesGcmAlgorithm(256),
-                new TripleDesCbcAlgorithm(),
-                new RsaOaepAlgorithm(2048),
-                new RsaOaepAlgorithm(3072)
+                new TripleDesCbcAlgorithm() // W domyśle .NET  keySize = 168 bit
             };
 
-            var allResults = new List<BenchmarkResult>();
-
-            foreach (var algorithm in algorithms)
-            {
-                Console.WriteLine($"Benchmarking {algorithm.Name} ({algorithm.KeySize})...");
-
-
-                var results = EncryptionBenchmark.Run(algorithm);
-                allResults.AddRange(results);
-            }
-
-            File.WriteAllText("encryption_results.json", JsonSerializer.Serialize(allResults, new JsonSerializerOptions { WriteIndented = true }));
-
-            Console.WriteLine("Zapisano do encryption_results.json");
+            await KeyGenBenchmark.RunAsync(algorithms);
+            await EncryptionBenchmark.RunAsync(algorithms);
         }
     }
 }
