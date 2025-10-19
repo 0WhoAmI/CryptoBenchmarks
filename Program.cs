@@ -8,6 +8,11 @@ namespace CryptoBenchmarks
     {
         public static async Task Main(string[] args)
         {
+            /*
+             * TODO:
+             *  - Zrobić klasy bazowe dla AES, RSA i 3DES
+             */
+
             Console.OutputEncoding = System.Text.Encoding.UTF8; // aby poprawnie wyświetlać polskie litery
 
             var algorithms = new List<IEncryptionAlgorithm>
